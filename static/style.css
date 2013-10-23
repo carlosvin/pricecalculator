@@ -1,0 +1,14 @@
+body{
+	background: rgb(240,240,240);
+	margin: 30%;
+}
+
+.body{
+	border-radius: 20px;
+	background: rgb(255,255,255);
+	padding: 10%;
+	font-family: arial;
+	-moz-box-shadow: 10px 10px 5px #888;
+	-webkit-box-shadow: 10px 10px 5px #888;
+	box-shadow: 10px 10px 5px #888;
+}
