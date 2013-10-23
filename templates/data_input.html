@@ -1,0 +1,23 @@
+
+<form action="/calculate" method="get">
+    Dinero que vamos a invertir: <input name="input_money" type="text" />
+    <br>
+    Precio de compra de la acción: <input name="buy_price" type="text" />
+    <input value="Calcular" type="submit" />
+</form>
+{% if input_values!=None %}
+	<table>
+		<tr>
+			<th>Ganancias</th>
+			<th>Precio de la acción</th>
+		</tr>
+		{% for i in (0,20,50,100,200) %}
+		<tr>
+			<td>{{i}}</td>
+			<td>
+			{{ input_values.get_sell_price(i) }}
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+{% endif %}
