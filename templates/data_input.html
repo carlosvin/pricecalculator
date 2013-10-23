@@ -1,8 +1,12 @@
-
+{% extends "layout.html" %}
+{% block title %}¿Cúanto vamos a ganar?{% endblock %}
+{% block titlebody %}¿Cúanto vamos a ganar?{% endblock %}
+{% block body %}
 <form action="/calculate" method="get">
     Dinero que vamos a invertir: <input name="input_money" type="text" />
     <br>
     Precio de compra de la acción: <input name="buy_price" type="text" />
+    <br>
     <input value="Calcular" type="submit" />
 </form>
 {% if input_values!=None %}
@@ -21,3 +25,4 @@
 		{% endfor %}
 	</table>
 {% endif %}
+{% endblock %}
