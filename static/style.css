@@ -5,8 +5,7 @@ body{
 }
 
 .page{
-	margin-left: 20%;
-	margin-right: 20%;
+	margin: 5%;
 }
 
 .main{
@@ -19,6 +18,13 @@ form {
 	-moz-box-shadow: 10px 10px 5px #888;
 	-webkit-box-shadow: 10px 10px 5px #888;
 	box-shadow: 10px 10px 5px #888;
+}
+
+form>*{
+	display: inline;
+}
+form>*>*{
+	display: table-cell;
 }
 
 table{
