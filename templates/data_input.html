@@ -3,9 +3,8 @@
 {% block titlebody %}¿Cúanto vamos a ganar?{% endblock %}
 {% block body %}
 <form action="/calculate" method="get">
-    <span><label>Dinero que vamos a invertir:</label><input name="input_money" type="number" min="0" step="0.01" /></span>
-    <span><label>Precio de compra de la acción:</label><input name="buy_price" type="number" min="0" step="0.01" /></span>
-    <br>
+    <input name="input_money" type="number" min="0" step="0.01" placeholder="Dinero que vamos a invertir"/>
+    <input name="buy_price" type="number" min="0" step="0.01" placeholder="Precio de compra de la acción:"/>
     <input value="Calcular" type="submit" />
 </form>
 {% if input_values!=None %}

@@ -21,9 +21,6 @@ form {
 }
 
 form>*{
-	display: inline;
-}
-form>*>*{
 	display: table-cell;
 }
 
