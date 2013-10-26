@@ -48,6 +48,6 @@ tr:hover{
 	background: rgba(200,200,150,0.6);
 }
 
-td{
+td, th{
 	text-align: right;
 }
