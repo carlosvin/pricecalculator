@@ -5,14 +5,14 @@ body{
 }
 
 .page{
-	margin: 5%;
+
 }
 
 .main{
 }
 
 form {
-	padding: 10%;
+	padding: 5%;
 	border-radius: 20px;
 	background: rgb(255,255,255);
 	-moz-box-shadow: 10px 10px 5px #888;
