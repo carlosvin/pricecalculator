@@ -31,3 +31,9 @@ class StocksInfoUpdater(object):
         dataread = self.downloader.read()
         self.parser.feed(dataread)
         return self.parser.stocks
+    
+
+
+
+    
+    

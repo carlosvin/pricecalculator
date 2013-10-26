@@ -1,2 +1,6 @@
 venv
 *.pyc
+.project
+.pydevproject
+.settings
+env

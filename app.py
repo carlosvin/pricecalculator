@@ -1,8 +1,10 @@
-from flask import Flask, request
 import os
 import cfg
 from data_input import StocksInfoUpdater
-
+from flask import Flask, request, logging
+from apscheduler.scheduler import Scheduler        
+        
+sched = Scheduler()
 app = Flask(__name__)
 stocks_updater = StocksInfoUpdater(cfg.URL_MERCADO_CONTINUO)
 
@@ -24,6 +26,11 @@ def load_remote_stocks():
     return ret
     
 
+#@sched.interval_schedule(minutes=1, hour='8-17', day='0-6')
+@sched.cron_schedule(minute='0,15,30,45', day_of_week='0-4', hour='8-17')
+def update_remote_data():
+    stocks_updater.update()
+
 def is_installed():
     return os.path.exists(cfg.DATA_DIR) 
 
@@ -33,4 +40,7 @@ def install():
 if __name__ == '__main__':
     if not is_installed():
         install()
+    sched.start()
+    sched.print_jobs()
+    stocks_updater.update()
     app.run(debug = cfg.DEBUG_MODE)

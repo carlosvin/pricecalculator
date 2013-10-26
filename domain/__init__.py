@@ -1,5 +1,5 @@
-
 # -*- coding: utf8 -*-
+
 class Stock(object):
     def __init__(self):
         self.id = None
@@ -7,11 +7,10 @@ class Stock(object):
         self.price = None
 
     def __str__(self):
-    	return self.__unicode__()
+        return self.__unicode__()
 
     def __unicode__(self):
-    	if self.name <> None:
-    		#return u"%s.\t%s %f" % (self.id, self.name, self.price)
-    		return u"%s.\t%f" % (self.id, self.price)
-    	else:
-    		return "None"
+        if self.name <> None:
+            return u"%s.\t%f" % (self.id, self.price)
+        else:
+            return "None"
