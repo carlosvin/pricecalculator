@@ -61,11 +61,11 @@ class StockParser (HTMLParser, object):
     
     def _table_c(self):
         self._is_table_open=False
+        self._clean_nones()
         
     def _tr_o(self):
         if self._is_table_open:
             self._td_c()
-            self._s_tmp = None
             self._td = 0
             self._s_tmp = Stock()
             self.stocks.append(self._s_tmp)
@@ -83,6 +83,11 @@ class StockParser (HTMLParser, object):
         
     def _a_c(self):
         self._is_a_open = False
+        
+    def _clean_nones(self):
+        for s in self.stocks:
+            if s.is_invalid():
+                self.stocks.remove(s)
 
            
                 

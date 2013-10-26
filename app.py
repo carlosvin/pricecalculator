@@ -1,46 +1,57 @@
 import os
-import cfg
 from data_input import StocksInfoUpdater
-from flask import Flask, request, logging
+from flask import Flask, render_template
 from apscheduler.scheduler import Scheduler        
+from cfg import URL_MERCADO_CONTINUO, DEBUG_MODE, DATA_DIR, DATA_EXTENSION,\
+    SCHED_MINUTES, SCHED_DAYS, SCHED_HOURS
+
+class App(Flask):
+    def __init__(self):
+        super(App, self).__init__(__name__)
+        self.sched = Scheduler()
+        self._stocks_updater = StocksInfoUpdater(URL_MERCADO_CONTINUO)
+        self.update_remote()
+            
+    def run(self):
+        if not self.is_installed():
+            self.install()
+        self.sched.start()
+        self.sched.print_jobs()
+        super(App, self).run(debug = DEBUG_MODE)
+    
+    def update_remote(self):
+        self._stocks_updater.update()
         
-sched = Scheduler()
-app = Flask(__name__)
-stocks_updater = StocksInfoUpdater(cfg.URL_MERCADO_CONTINUO)
+    def _get_stocks(self):
+        return self._stocks_updater.stocks
+    stocks=property(_get_stocks)
+
+    @staticmethod
+    def is_installed():
+        return os.path.exists(DATA_DIR) 
+
+    @staticmethod
+    def install():
+        os.mkdir(DATA_DIR)
+
+app = App()
 
 @app.route('/')
 def list_our_stocks():
     stocks_files = []
-    for files in os.listdir(cfg.DATA_DIR):
-        if files.endswith(cfg.DATA_EXTENSION):
+    for files in os.listdir(DATA_DIR):
+        if files.endswith(DATA_EXTENSION):
             stocks_files.append(files)
-            
     return unicode(stocks_files)
 
-@app.route('/load_remote_stocks')
-def load_remote_stocks():
-    stocks = stocks_updater.update()
-    ret = ""
-    for v in stocks:
-        ret += "<br>" + unicode(v)
-    return ret
-    
+@app.route('/prices')
+def list_prices():
+    return render_template('instruments_select.html', stocks=app.stocks)
 
-#@sched.interval_schedule(minutes=1, hour='8-17', day='0-6')
-@sched.cron_schedule(minute='0,15,30,45', day_of_week='0-4', hour='8-17')
+
+@app.sched.cron_schedule(minute=SCHED_MINUTES, day_of_week=SCHED_DAYS, hour=SCHED_HOURS)
 def update_remote_data():
-    stocks_updater.update()
+    app.update_remote()
 
-def is_installed():
-    return os.path.exists(cfg.DATA_DIR) 
-
-def install():
-    os.mkdir(cfg.DATA_DIR)
-    
 if __name__ == '__main__':
-    if not is_installed():
-        install()
-    sched.start()
-    sched.print_jobs()
-    stocks_updater.update()
-    app.run(debug = cfg.DEBUG_MODE)
+    app.run()

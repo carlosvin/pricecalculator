@@ -32,6 +32,10 @@ class StocksInfoUpdater(object):
         self.parser.feed(dataread)
         return self.parser.stocks
     
+    def _get_stocks(self):
+        return self.parser.stocks
+    stocks = property(_get_stocks)
+    
 
 
 
