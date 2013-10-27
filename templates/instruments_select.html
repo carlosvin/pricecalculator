@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
-</html>
+{% if stocks %}
+	<ol>
+	{% for s in stocks %}
+		{% if s %}
+		<li title="{{ s.name }}">{{ s.id }}: {{ s.price }}</li>
+		{% endif %}
+	{% endfor %}
+	</ol>
+{% else %}
+	No hay stocks
+{% endif %}

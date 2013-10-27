@@ -20,7 +20,6 @@ class Downloader(object):
         logging.debug('Read %u bytes from %s (%s)' % (len(data), self.url, charset))
         return data
     
-    
 class StocksInfoUpdater(object):
     
     def __init__(self, url):
@@ -31,3 +30,13 @@ class StocksInfoUpdater(object):
         dataread = self.downloader.read()
         self.parser.feed(dataread)
         return self.parser.stocks
+    
+    def _get_stocks(self):
+        return self.parser.stocks
+    stocks = property(_get_stocks)
+    
+
+
+
+    
+    

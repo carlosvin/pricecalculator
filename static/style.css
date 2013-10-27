@@ -1,42 +1,53 @@
+html { 
+	font-size: 100%; 
+} 
 body{
 	margin: 5%;	
 	background: rgb(240,240,240);
 	font-family: arial;
+	font-size: 14px; font-size: 1.4rem; 
 }
 
+h1   { 
+ 	font-family:"Times New Roman",Georgia,Serif;
+	font-size: 20px; font-size: 2.0rem; 
+} 
+
+
 .page{
-	margin: 5%;
 }
 
 .main{
 }
 
 form {
-	padding: 10%;
+	padding: 5%;
 	border-radius: 20px;
 	background: rgb(255,255,255);
 	-moz-box-shadow: 10px 10px 5px #888;
 	-webkit-box-shadow: 10px 10px 5px #888;
 	box-shadow: 10px 10px 5px #888;
+	display: table;
 }
 
 form>*{
-	display: inline;
-}
-form>*>*{
 	display: table-cell;
 }
 
 table{
-	width: 100%;
-	padding-left: 10%;
-	padding-right: 10%;
-	padding-top: 2%;
-	padding-bottom: 2%;
-	background: rgba(200, 200, 200, 0.5);
-	margin-top: 2%;
+	margin-top: 3%;
+	padding: 1%;
+}
+tr:nth-child(2n+1) {
+	background: rgb(200, 200, 200);
+}
+tr:nth-child(2n+2) {
+	background: rgb(220, 220, 220);
+}
+tr:hover{
+	background: rgba(200,200,150,0.6);
 }
 
-th > td {
-	background: rgba(200, 200, 200, 0.5);
+td, th{
+	text-align: right;
 }
