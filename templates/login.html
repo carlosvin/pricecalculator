@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+<section class="loginform cf">
+<form name="login" action="/login" method="post" accept-charset="utf-8">
+	{% if email %}
+		<input type="email" name="email" placeholder="yourname@email.com"required>
+	{% else %}
+		<input type="email" name="email" placeholder="yourname@email.com"required value="{{ email }}">
+	{% endif %}
+		<input type="password" name="password" placeholder="password" required>
+		<input type="submit" value="Login">
+	{% block extra_inputs %}{% endblock %}
+</form>
+</section>
+{% endblock %}
