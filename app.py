@@ -3,7 +3,8 @@ from data_input import StocksInfoUpdater
 from flask import Flask, render_template, request
 from apscheduler.scheduler import Scheduler        
 from cfg import URL_MERCADO_CONTINUO, DEBUG_MODE, DATA_DIR, DATA_EXTENSION,\
-    SCHED_MINUTES, SCHED_DAYS, SCHED_HOURS, PM_FILE_PATH, USERS_FILE_PATH
+    SCHED_MINUTES, SCHED_DAYS, SCHED_HOURS, PM_FILE_PATH, USERS_FILE_PATH,\
+    USERS_FILE_PATH, SECRET_KEY
 import pickle
 from domain.portfolio import PortfolioManager
 from domain.filters import factory
@@ -15,17 +16,19 @@ from werkzeug.utils import redirect
 class App(Flask):
     def __init__(self):
         super(App, self).__init__(__name__)
+        self.secret_key=SECRET_KEY
         self.sched = Scheduler()
         self._stocks_updater = StocksInfoUpdater(URL_MERCADO_CONTINUO)
         self.update_remote()
         
-        self._pm = pickle.load(open( PM_FILE_PATH, "rb" ))
-        if self._pm == None:
+        try:
+            self._pm = pickle.load(open( PM_FILE_PATH, "rb" ))
+        except IOError:
             self._pm = PortfolioManager()
-        
-        self._user_manager = pickle.load(open( USERS_FILE_PATH, "rb" ))
-        if self._user_manager == None:
-            self._user_manager = UserManager()
+        try:        
+            self._user_manager = pickle.load(open( USERS_FILE_PATH, "rb" ))
+        except IOError:
+            self._user_manager = UserManager(USERS_FILE_PATH)
         
         self._login_manager = LoginManager()
         self._login_manager.init_app(self)
@@ -58,19 +61,46 @@ class App(Flask):
     
     def login(self, uid, password):
         return self._user_manager.login(uid, password)
+
+    def user_exists(self, uid):
+        return self._user_manager.login(uid, password)
                 
 app = App()
 
 @app.route("/login", methods=["POST"])
-def login():
-    login = request.form['login']
+def login_post():
+    email = request.form['email']
     password = request.form['password']
-    if login and password:
-        user = app.login(login, password)
-        login_user(user)
-        flash("Logged in successfully.")
-        return redirect(request.args.get("next") or url_for("index"))
-    return render_template("login.html", login=login, password=password)
+    if email and password:
+        user = app.login(email, password)
+        if user:
+            login_user(user)
+            flash("Logged in successfully.")
+            return redirect(request.args.get("next") or url_for("index"))
+        else:
+            flash("Invalid email or password", 'error')
+    return render_template("login.html",action='/login', email=email, password=password)
+
+@app.route("/login", methods=["GET"])
+def login_get():
+    return render_template("login.html", action='/login')
+
+@app.route("/add/user", methods=["POST"])
+def add_user_post():
+    admin_password = request.form['admin_password']
+    email = request.form['email']
+    password = request.form['password']    
+    if admin_password:
+        if email and password:
+            app.user_exists(email)
+    else:
+        flash("You cannot create an user", 'error')
+        return render_template("add_user.html", action='/add/user', email=email)
+
+@app.route("/add/user", methods=["GET"])
+def add_user_get():
+    return render_template("add_user.html", action='/add/user')
+
 
 @app.route('/')
 def list_our_stocks():

@@ -33,7 +33,10 @@ class UserManager(object):
         self._users = {}
             
     def get(self, uid):
-        return self._users[uid]
+        if uid in self._users:
+            return self._users[uid]
+        else:
+            return None
 
     def login(self, uid, password):
         user = self.get(uid)
