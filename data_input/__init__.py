@@ -20,7 +20,6 @@ class Downloader(object):
         logging.debug('Read %u bytes from %s (%s)' % (len(data), self.url, charset))
         return data
     
-    
 class StocksInfoUpdater(object):
     
     def __init__(self, url):

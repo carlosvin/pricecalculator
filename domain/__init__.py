@@ -25,3 +25,6 @@ class Stock(object):
         
     def is_invalid(self):
         return self.id==None or self.price==None
+    
+
+    
