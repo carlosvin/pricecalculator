@@ -19,3 +19,6 @@ USERS_FILE_NAME = 'users.saved'
 USERS_FILE_PATH = os.path.join(DATA_DIR, USERS_FILE_NAME)
 
 SECRET_KEY = 'fjsDFDeseJIKL675yu67321f--lfgLd'
+
+""" You must change this password """
+ADMIN_PASSWORD = "admin"

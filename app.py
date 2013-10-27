@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 from apscheduler.scheduler import Scheduler        
 from cfg import URL_MERCADO_CONTINUO, DEBUG_MODE, DATA_DIR, DATA_EXTENSION,\
     SCHED_MINUTES, SCHED_DAYS, SCHED_HOURS, PM_FILE_PATH, USERS_FILE_PATH,\
-    USERS_FILE_PATH, SECRET_KEY
+    USERS_FILE_PATH, SECRET_KEY, ADMIN_PASSWORD
 import pickle
 from domain.portfolio import PortfolioManager
 from domain.filters import factory
@@ -28,7 +28,7 @@ class App(Flask):
         try:        
             self._user_manager = pickle.load(open( USERS_FILE_PATH, "rb" ))
         except IOError:
-            self._user_manager = UserManager(USERS_FILE_PATH)
+            self._user_manager = UserManager()
         
         self._login_manager = LoginManager()
         self._login_manager.init_app(self)
@@ -62,8 +62,15 @@ class App(Flask):
     def login(self, uid, password):
         return self._user_manager.login(uid, password)
 
-    def user_exists(self, uid):
-        return self._user_manager.login(uid, password)
+    def add_user(self, uid, password, admin_password):
+        if admin_password == ADMIN_PASSWORD and self._user_manager.add_user(uid, password):
+            try:        
+                pickle.dump(self._user_manager, open( USERS_FILE_PATH, "wb" ), -1)
+                return True
+            except IOError:
+                return False
+        else:
+            return False
                 
 app = App()
 
@@ -90,9 +97,9 @@ def add_user_post():
     admin_password = request.form['admin_password']
     email = request.form['email']
     password = request.form['password']    
-    if admin_password:
-        if email and password:
-            app.user_exists(email)
+    if app.add_user(email, password, admin_password):
+        flash("User %s added" % (email,))
+        return render_template("add_user.html", action='/add/user')
     else:
         flash("You cannot create an user", 'error')
         return render_template("add_user.html", action='/add/user', email=email)

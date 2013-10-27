@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <section class="loginform cf">
-<form name="login" action="/login" method="post" accept-charset="utf-8">
+<form name="login" action="{{ action }}" method="post" accept-charset="utf-8">
 	{% if email %}
 		<input type="email" name="email" placeholder="yourname@email.com"required>
 	{% else %}
