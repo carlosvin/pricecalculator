@@ -1,6 +1,5 @@
 import os
 import logging
-from codegen.reversewrapper import DEBUG_MODE
 from cfg.data import *
 
 class Paths:
