@@ -3,33 +3,26 @@ Created on 27/10/2013
 
 @author: carlos
 '''
+from flask_login import UserMixin
 
-class User(object):
+class User(UserMixin):
     def __init__(self, email, password, is_active):
-        self._is_auth = False
-        self._is_activated = False
-        self._email = None        
-        self._password = None        
-    
-    def is_authenticated(self):
-        return self._is_auth
-    
-    def is_active(self):
-        return self._is_activated
-    
-    def is_anonymous(self):
-        return False
-    
-    def get_id(self):
-        return self._email
+        self._email = email        
+        self._password = password        
     
     def is_right_password(self, pw):
         return self._password == pw
-
+    
+    def get_id(self):
+        return unicode(self._email)
+    
     #TODO improve this method
     @staticmethod
     def is_valid_password(password):
         return len(password) > 0
+    
+    def __repr__(self):
+        return '<User %r>' % (self._email)
     
 class UserManager(object):
     
@@ -55,7 +48,11 @@ class UserManager(object):
             return False
         else:
             if User.is_valid_password(password):
-                self._users[uid] = User(uid, password,True)
+                self._users[uid] = User(uid, password, True)
                 return True
             else:
                 return False
+    
+    def _get_uids(self):
+        return self._users.keys()
+    uids = property(_get_uids)

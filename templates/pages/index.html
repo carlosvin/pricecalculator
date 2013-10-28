@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block title %}Home{% endblock %}
+{% block titlebody %}Portfolio Watcher{% endblock %}
+{% block body %}
+	{% if uid %}
+		<section id="own portfolios">
+			<h1>Portfolios propios</h1>
+			{% with portfolios=own_pfs %}
+				{% include 'list_portfolios.html' %}
+			{% endwith %}
+		</section>
+		<section id="shared portfolios">
+			<h1>Portfolios que han compartido contigo</h1>
+			{% with portfolios=shared_pfs %}
+				{% include 'list_portfolios.html' %}
+			{% endwith %}
+		</section>
+	{% else %}
+		<p>Si no te identificas, no podras ver tus portfolios.</p>
+	{% endif %}
+{% endblock %}

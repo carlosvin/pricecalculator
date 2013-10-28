@@ -1,0 +1,18 @@
+{% if portfolio %}
+<article>
+<h1><a href="{{ url_for('portfolios.view',name=portfolio.name) }}">{{ portfolio.name }}</a></h1>
+<
+<details><span class="author">{{ portfolio.owner }}</span><span class="market">{{ portfolio.market }}</span></details>
+<ul>Shared with:
+{% for u in porfolio.users %}
+	<li>{{ u }}</li>
+{% endfor %}
+</ul>
+<ul>Shared with:
+{% for f in porfolio.filters %}
+	<li>{{ f }}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>Portfolio '{{name}}' not found.</p>
+{% endif %}

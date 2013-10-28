@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% if stocks %}
+	<ol>
+	{% for s in stocks %}
+		{% if s %}
+		<li title="{{ s.name }}">{{ s.id }}: {{ s.price }}</li>
+		{% endif %}
+	{% endfor %}
+	</ol>
+{% else %}
+	No hay stocks
+{% endif %}

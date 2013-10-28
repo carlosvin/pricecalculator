@@ -35,6 +35,10 @@ class StocksInfoUpdater(object):
         return self.parser.stocks
     stocks = property(_get_stocks)
     
+    def _get_url(self):
+        return self.downloader.url
+    url = property(_get_url)
+    
 
 
 

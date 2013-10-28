@@ -1,15 +1,20 @@
-{% extends "layout.html" %}
-{% block body %}
-<section class="loginform cf">
-<form name="login" action="{{ action }}" method="post" accept-charset="utf-8">
+{%if uid %}
+	Hi {{ uid }}, <a href="{{ url_for('logout') }}">log out</a>
+{% else %}
+	<section class="loginform cf">
+	{% if action %}
+		<form name="login" action="{{ action }}" method="post" accept-charset="utf-8">
+	{% else %}
+		<form name="login" action="/login" method="post" accept-charset="utf-8">
+	{% endif %}
 	{% if email %}
 		<input type="email" name="email" placeholder="yourname@email.com"required>
 	{% else %}
 		<input type="email" name="email" placeholder="yourname@email.com"required value="{{ email }}">
 	{% endif %}
 		<input type="password" name="password" placeholder="password" required>
-		<input type="submit" value="Login">
 	{% block extra_inputs %}{% endblock %}
-</form>
-</section>
-{% endblock %}
+		<input type="submit" value="Login">
+	</form>
+	</section>
+{% endif %}

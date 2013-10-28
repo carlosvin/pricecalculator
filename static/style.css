@@ -51,3 +51,8 @@ tr:hover{
 td, th{
 	text-align: right;
 }
+
+label{
+	font-size: 10px; font-size: 0.8rem; 
+	font-style: italic;
+}

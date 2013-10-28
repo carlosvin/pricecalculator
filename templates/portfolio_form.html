@@ -1,0 +1,20 @@
+
+<form action="{{ url_for('portfolios.save') }}" method="post">
+	<input type="text" name="name" placeholder="Nombre del portfolio" required>
+	<label for="shared_with">Mercado</label>
+	<select id="market" name="market" contextmenu="Selecciona un tipo de mercado">
+		{% for m in markets %}
+   		<option>{{ m.name }}</option>
+   		{% endfor %}
+	</select>
+	<label for="shared_with">Compartir con</label>
+	<select id="shared_with" name="shared_with" multiple>
+		{% for u in uids %}
+			{% if u != uid %}
+   				<option>{{ u }}</option>
+   			{% endif %}
+   		{% endfor %}
+	</select>
+	
+	<input type="submit">
+</form>
