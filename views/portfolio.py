@@ -22,7 +22,8 @@ def save(name):
     uid=current_user.get_id()
     new_name = request.form['name']
     new_market = request.form['market']
-    new_shared_uids = request.form['shared_with']
+    new_shared_uids = request.form.getlist('shared_with')
+    logging.debug(new_shared_uids)
     if new_name and new_market:
         if name: #update
             pf = current_app.portfolio_manager.get(uid, name)
@@ -36,6 +37,8 @@ def save(name):
         else: #create
             pf = Portfolio(new_name, new_market, uid)
             pf.users = new_shared_uids
+            current_app.portfolio_manager.add(pf)
+    # todo save portfolios
     flash('Saved portfolio %s' % (new_name, ))
     return redirect(url_for(portfolios_bp.name + '.view', name=new_name))
             

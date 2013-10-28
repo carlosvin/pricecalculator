@@ -7,6 +7,7 @@ Configurable parameters
 
 '''
 from domain.market import Market
+from domain.filters import FilterLessThan, FilterMoreThan
 
 class FileNames:
     DATA_DIR =  'data'
@@ -28,3 +29,8 @@ class Secrets:
 MARKETS = (
            Market('Continuo', "http://www.invertia.com/mercados/bolsa/indices/mdo-continuo/acciones-ib011continu"),
            )
+
+FILTERS=(
+    FilterLessThan.name, 
+    FilterMoreThan.name, 
+)

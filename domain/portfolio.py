@@ -14,18 +14,18 @@ class PortfolioManager(object):
             PortfolioManager.add_to(u, p, self._portfolios_shared)
         PortfolioManager.add_to(p.owner, p, self._portfolios)
 
+
     @staticmethod
     def add_to(uid, p, pfs):
-        if pfs[uid] == None:
-            pfs[uid] = dict()
+        if not uid in pfs:
+            pfs[uid] = {}
         pfs[uid][p.name] = p
     
     def get(self, uid , p_name):
-        if uid in self._portfolios:
-            pfs = self._portfolios[uid]
-            if p_name in pfs:
-                return pfs[p_name]
-        return None
+        try:
+            return self._portfolios[uid][p_name]
+        except:
+            return None
     
     def get_own(self, uid):
         try:
@@ -52,7 +52,7 @@ class Portfolio(object):
     def add_filter(self, f):
         self.filters[f.id] = f
     
-    def remove_filter(self, filter_id):
+    def del_filter(self, filter_id):
         self.filters.pop(filter_id)
         
     def update(self, name, market, users):
