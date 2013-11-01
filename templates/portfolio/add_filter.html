@@ -4,7 +4,7 @@
 	{% for field in fields %}
 		<input type="{{ field.type }}" name="{{ field.name }}" placeholder="{{ field.description }}" {{ field.extra_params }}>
 	{% endfor %}
-	<a href="{{ url_for('portfolio.view',name=p_name) }}">Cancel</a>
+	<a href="{{ url_for('portfolio.view',name=p_name,uid=uid) }}">Cancel</a>
 	<input type="submit" value="Add filter">
 </form>
 </section>

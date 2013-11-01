@@ -12,7 +12,7 @@ from werkzeug.utils import redirect
 from urllib2 import URLError
 import logging
 from cfg import Log, Paths, Extensions
-from cfg.data import Secrets, SchedCfg, Enums
+from cfg.data import Secrets, SchedCfg, Enums, Alerts, Application
 from views.portfolio import portfolio_bp
 
 class App(Flask):
@@ -20,6 +20,7 @@ class App(Flask):
         super(App, self).__init__(__name__)
         self.secret_key=Secrets.KEY
         self.config.from_object(Enums)
+        self.config.from_object(Application)
         
         if not self.is_installed():
             self.install()
@@ -108,9 +109,9 @@ def login_post():
         user = app.login(email, password)
         if user:
             login_user(user, remember=True)
-            flash("Logged in successfully.")
+            flash("Logged in successfully.", Alerts.SUCCESS)
         else:
-            flash("Invalid email or password", 'error')
+            flash("Invalid email or password", Alerts.ERROR)
     return redirect(request.args.get("next") or url_for("index"))
     #return render_template("login.html", action='/login', email=email, password=password)
 
@@ -133,7 +134,7 @@ def add_user_post():
         flash("User %s added" % (email,))
         return render_template("pages/add_user.html", action='/add/user')
     else:
-        flash("You cannot create an user", 'error')
+        flash("You cannot create an user", Alerts.ERROR)
         return render_template("pages/add_user.html", action='/add/user', email=email)
 
 @app.route("/add/user", methods=["GET"])

@@ -35,4 +35,12 @@ class Enums:
         FilterLessThan.NAME, 
         FilterMoreThan.NAME, 
 )
-    
+
+class Alerts:
+    SUCCESS = 'success'
+    INFO = 'info'
+    WARN = 'warning'
+    ERROR = 'danger'
+
+class Application:
+    APP_NAME = "Tuntun"
