@@ -1,12 +1,42 @@
-<!doctype html>
-<title> {% block title %}{% endblock %}</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class="page">
-  {% include 'login.html' %}
-  {% include 'messages.html' %}
-  
-  <h1>  {% block titlebody %}{% endblock %}</h1>
-  <div class="main">
-  {% block body %}{% endblock %}
-  </div>
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet" media="screen">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="navbar navbar-default navbar-fixed-top">
+    	<div class="container">
+	    	<div class="navbar-header">
+	    		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		        </button>
+		        <a class="navbar-brand" href="/">Home</a>
+	    	</div>
+			<div class="navbar-collapse collapse">
+			{% include 'navbar.html' %}
+			{% include 'login.html' %}
+	        </div>
+    	</div>
+    </div>
+    <div class="container">    
+	    <h1>{% block titlebody %}{% endblock %}</h1>
+	    <div class="container">
+		    {% block body %}{% endblock %}
+	    </div>
+  		{% include 'messages.html' %}
+    </div>
+	
+	<script src="https://code.jquery.com/jquery.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>  
+</body>
+</html>

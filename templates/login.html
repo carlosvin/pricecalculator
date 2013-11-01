@@ -1,20 +1,25 @@
 {%if uid %}
+	<div class="navbar-form navbar-right" name="form-signin">
 	Hi {{ uid }}, <a href="{{ url_for('logout') }}">log out</a>
+	</div>
 {% else %}
-	<section class="loginform cf">
 	{% if action %}
-		<form name="login" action="{{ action }}" method="post" accept-charset="utf-8">
+		<form class="navbar-form navbar-right" name="form-signin" action="{{ action }}" method="post" accept-charset="utf-8">
 	{% else %}
-		<form name="login" action="/login" method="post" accept-charset="utf-8">
+		<form class="navbar-form navbar-right" name="form-signin" action="/login" method="post" accept-charset="utf-8">
 	{% endif %}
+	<div class="form-group">
 	{% if email %}
-		<input type="email" name="email" placeholder="yourname@email.com"required>
+		<input type="email" name="email" class="form-control" placeholder="yourname@email.com"required>
 	{% else %}
-		<input type="email" name="email" placeholder="yourname@email.com"required value="{{ email }}">
+		<input type="email" name="email" class="form-control" placeholder="yourname@email.com"required value="{{ email }}">
 	{% endif %}
-		<input type="password" name="password" placeholder="password" required>
+	</div>
+	<div class="form-group">
+		<input type="password" name="password" class="form-control" placeholder="password" required>
+	</div>
+
 	{% block extra_inputs %}{% endblock %}
-		<input type="submit" value="Login">
+		<input type="submit" value="Login" class="btn btn-success">
 	</form>
-	</section>
 {% endif %}
