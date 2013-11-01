@@ -1,0 +1,45 @@
+{% if portfolio %}
+	<article>
+		<h1>
+			<a href="{{ url_for('portfolio.view', name=portfolio.name, uid=portfolio.owner) }}">{{ portfolio.name }}</a>
+		</h1>
+		<details>
+			<span class="author">{{ portfolio.owner }}</span>
+			<span class="market">{{ portfolio.market }}</span>
+		</details>
+		<section class="shared_with">
+			<h2>Shared with</h2>
+			{% if portfolio.users %}
+				<ul>
+				{% for u in portfolio.users %}
+					<li>{{ u }}</li>
+				{% endfor %}
+				</ul>
+			{% else %}
+				<p class="info">No has compartido este portfolio con nadie.</p>
+			{% endif%}
+			{% if portfolio.owner==uid %} <a href="{{ url_for('portfolio.update',name=portfolio.name) }}">Puedes editarlo y compartirlo</a>{% endif %}
+		</section>
+		
+		<section class="filters">	
+			<h2>Filters</h2>
+			<ul>
+				{% for f in portfolio.filters.values() %}
+				<li>
+					{{ f.id }}{% if portfolio.owner==uid %}(<a href="{{ url_for('portfolio.del_filter', name=portfolio.name, filter_id=f.id) }}">Borrar filtro</a>){% endif %}
+				</li>
+				{% endfor %}
+				{% if portfolio.owner==uid %}
+				<li>
+					{% with p_name=portfolio.name %}
+						{% include 'portfolio/add_filter_selecttype.html' %}					
+					{% endwith %}
+				</li>
+				{% endif %}
+			</ul>
+			
+		</section>
+	</article>
+{% else %}
+	Portfolio '{{name}}' not found.
+{% endif %}

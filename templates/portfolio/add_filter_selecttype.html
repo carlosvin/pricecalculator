@@ -1,0 +1,8 @@
+<form action="{{ url_for('portfolio.select_filter',name=p_name) }}" method="post">
+	<select name="filter_type">
+		{% for filter_type in config.FILTERS %}
+		<option>{{ filter_type }}</option>
+		{% endfor %}
+	</select>
+	<input type="submit" value="Siguiente">
+</form>

@@ -1,0 +1,10 @@
+<section class="filter">
+<h1>Creating filter "{{ filter_type }}"</h1>
+<form action="{{ url_for('portfolio.add_filter',name=p_name, filter_type=filter_type) }}" method="post">
+	{% for field in fields %}
+		<input type="{{ field.type }}" name="{{ field.name }}" placeholder="{{ field.description }}" {{ field.extra_params }}>
+	{% endfor %}
+	<a href="{{ url_for('portfolio.view',name=p_name) }}">Cancel</a>
+	<input type="submit" value="Add filter">
+</form>
+</section>

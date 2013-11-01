@@ -3,18 +3,36 @@ Created on 27/10/2013
 
 @author: carlos
 '''
+from domain.validator import FloatPossitiveValidator
 
-class Field(object)
-"""
-Help us to represent relevant fields of filter
-"""
-	def __init__(self, name, t, description=""):
+class Field(object):
+	""" Help us to represent relevant fields of filter"""
+	def __init__(self, name, t, description="", extra_params='', validator=None):
 		self.name = name
 		self.type = t
-		self.description =description
+		self.description = description
+		self._value = None
+		self.extra_params = 'title=' + self.name + ' ' + extra_params
+		self._validator = validator
+		
+	def __repr__(self):
+		if self.value:
+			return u"%s:%s=%s" % (self.name, self.type, self.value)
+		else:
+			return u"%s:%s=%s" % (self.name, self.type, "None")
+	
+	@property
+	def value(self):
+		return self._value
+	
+	@value.setter
+	def value(self, v):
+		if self._validator:
+			self._validator.validate(v)
+		self._value = v
 
 class Filter(object):
-	def __init__():
+	def __init__(self):
 		self.fields = {}
 
 	def add_field(self, f):
@@ -25,30 +43,53 @@ class Filter(object):
 
 	def filter(self, v):
 		raise "Not implemented, you must override this method"
+	
+	@classmethod
+	def get_name(self):
+		raise "Not implemented, you must override this method"
+	
+	@property
+	def id(self):
+		return self.get_name() + str(self.fields.values())
+	
+	@staticmethod
+	def factory(filter_type):
+		if filter_type == FilterLessThan.NAME:
+			return FilterLessThan()
+		elif filter_type == FilterMoreThan.NAME:
+			return FilterMoreThan()
+		else:
+			return None
 
+	
 class FilterXThan(Filter):
+	
+	def __init__(self):
+		super(FilterXThan, self).__init__()
+		self._field = Field("price", "number", description="i.e: 0.3",  extra_params='step=any', validator=FloatPossitiveValidator())
+		self.add_field(self._field)
 
-    def ___init__(self, value):
-        self.value = float(value)
-        self.add_field(Field("price", "number", "i.e: 0.3"))
-        
+	@property
+	def value(self):
+		return float(self._field.value)
+
 class FilterLessThan(FilterXThan):
-    name = 'Menor que'
+	NAME = 'Menor que'
+	
+	def filter(self, v):
+		return self.value < float(v)
+	
+	@classmethod
+	def get_name(self):
+		return self.NAME
 
-    def filter(self, v):
-        return self.value < float(v)
+class FilterMoreThan(FilterXThan):
+	NAME = 'Mayor que'
 
-class FilterMoreThan(Filter):
-    name = 'Mayor que'
-        
-    def filter(self, v):
-        return self.value > float(v)
-
-
-def factory(filter_type, value):
-    if filter_type == FilterLessThan.name:
-        return FilterLessThan(value)
-    else if filter_type == FilterMoreThan.name:
-        return FilterMoreThan(value)
-    else:
-        return None
+	def filter(self, v):
+		return self.value > float(v)
+	
+	@classmethod
+	def get_name(self):
+		return self.NAME
+	

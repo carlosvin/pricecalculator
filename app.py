@@ -3,33 +3,31 @@ from data_input import StocksInfoUpdater
 from flask import Flask, render_template, request
 from apscheduler.scheduler import Scheduler        
 import pickle
-from domain.portfolio import PortfolioManager, Portfolio
-from domain.filters import factory
+from domain.portfolio import PortfolioManager
 from flask_login import LoginManager, login_user, logout_user,login_required,\
     current_user
-from domain.user import User, UserManager
+from domain.user import UserManager
 from flask.helpers import flash, url_for
 from werkzeug.utils import redirect
 from urllib2 import URLError
 import logging
 from cfg import Log, Paths, Extensions
-from cfg.data import Secrets, SchedCfg, MARKETS
-from views.portfolio import portfolios_bp
+from cfg.data import Secrets, SchedCfg, Enums
+from views.portfolio import portfolio_bp
 
 class App(Flask):
     def __init__(self):
         super(App, self).__init__(__name__)
         self.secret_key=Secrets.KEY
+        self.config.from_object(Enums)
         
         if not self.is_installed():
             self.install()
         
         logging.basicConfig(filename=Paths.LOG , level=Log.LEVEL)
         
-        try:
-            self.portfolio_manager = pickle.load(open( Paths.PORTFOLIOS, "rb" ))
-        except IOError:
-            self.portfolio_manager = PortfolioManager()
+        self.load_portfolio_manager()
+        
         try:        
             self._user_manager = pickle.load(open( Paths.USERS, "rb" ))
         except IOError:
@@ -42,7 +40,7 @@ class App(Flask):
         
         # TODO when we have more markets, then we'll create and stocks upater by market
         self.sched = Scheduler()
-        self._stocks_updater = StocksInfoUpdater(MARKETS[0].url)
+        self._stocks_updater = StocksInfoUpdater(Enums.MARKETS[0].url)
         self.update_remote()
         
     def run(self):
@@ -66,9 +64,6 @@ class App(Flask):
     @staticmethod
     def install():
         os.mkdir(Paths.DATA_DIR)
-        
-    def append_filter(self, filter, portfolio):
-        portfolio.add_filter(filter)
     
     def login(self, uid, password):
         return self._user_manager.login(uid, password)
@@ -86,9 +81,23 @@ class App(Flask):
     def _get_uids(self):
         return self._user_manager.uids
     uids = property(_get_uids)
+    
+    def load_portfolio_manager(self):
+        try:
+            self.portfolio_manager = pickle.load(open( Paths.PORTFOLIOS, "rb" ))
+        except IOError:
+            self.portfolio_manager = PortfolioManager()
+    
+    def save_portfolio_manager(self):
+        try:
+            pickle.dump(self.portfolio_manager, open( Paths.PORTFOLIOS, "wb" ), -1)
+            return True
+        except IOError as e:
+            logging.error(e)
+            return False
                 
 app = App()
-app.register_blueprint(portfolios_bp)
+app.register_blueprint(portfolio_bp)
 
 
 @app.route("/login", methods=["POST"])
@@ -146,7 +155,9 @@ def list_prices():
 @app.route('/')
 def index():
     uid = current_user.get_id()
-    return render_template("pages/index.html", uid=uid, own_pfs=app.portfolio_manager.get_own(uid), shared_pfs=app.portfolio_manager.get_shared(uid))
+    return render_template("pages/index.html", 
+                           uid=uid, 
+                           own_pfs=app.portfolio_manager.get_own(uid).values(), shared_pfs=app.portfolio_manager.get_shared(uid).values())
 
 @app.sched.cron_schedule(minute=SchedCfg.MINUTES, day_of_week=SchedCfg.DAYS, hour=SchedCfg.HOURS)
 def update_remote_data():

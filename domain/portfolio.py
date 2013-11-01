@@ -3,6 +3,7 @@ Created on 27/10/2013
 
 @author: carlos
 '''
+import logging
 
 class PortfolioManager(object):
     def __init__(self):
@@ -24,20 +25,31 @@ class PortfolioManager(object):
     def get(self, uid , p_name):
         try:
             return self._portfolios[uid][p_name]
-        except:
+        except BaseException as e:
+            logging.exception(e)
             return None
+        
+    def delete(self, uid , p_name):
+        try:
+            for u in self._portfolios[uid][p_name].users:
+                del self._portfolios_shared[u][p_name]
+            del self._portfolios[uid][p_name]
+            return True
+        except BaseException as e:
+            logging.exception(e)
+            return False
     
     def get_own(self, uid):
         try:
             return self._portfolios[uid]
         except:
-            return None
+            return {}
         
     def get_shared(self, uid):
         try:
             return self._portfolios_shared[uid]
         except:
-            return None
+            return {}
         
             
 class Portfolio(object):
@@ -53,10 +65,13 @@ class Portfolio(object):
         self.filters[f.id] = f
     
     def del_filter(self, filter_id):
-        self.filters.pop(filter_id)
+        del self.filters[filter_id]
         
     def update(self, name, market, users):
         self.users = users
         self.name = name
         self.market = market
+        
+    def is_owner(self, uid):
+        return self.owner == uid
     

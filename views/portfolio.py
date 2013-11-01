@@ -9,14 +9,20 @@ from flask_login import login_required, current_user
 from flask.globals import request, current_app
 import logging
 from flask.helpers import flash, url_for
-from cfg.data import MARKETS
 from domain.portfolio import Portfolio
 from werkzeug.utils import redirect
+from domain.filters import Filter
 
-portfolios_bp = Blueprint('portfolios', __name__, template_folder='templates')
+portfolio_bp = Blueprint('portfolio', __name__, template_folder='templates/')
 
-@portfolios_bp.route('/save', defaults={'name': None}, methods=['POST'])
-@portfolios_bp.route('/save/<name>', methods=['POST','GET'])
+def save_portfolio_manager():
+    if current_app.save_portfolio_manager():
+        flash( 'Saving portfolio manager: OK')
+    else:
+        flash('Saving portfolio manager: Error', 'error')
+
+@portfolio_bp.route('/save', defaults={'name': None}, methods=['POST'])
+@portfolio_bp.route('/save/<name>', methods=['POST','GET'])
 @login_required
 def save(name):
     uid=current_user.get_id()
@@ -32,7 +38,7 @@ def save(name):
             else:
                 logging.warn('The portfolio %s does not exist. Cannot update it.' % (name,))
                 flash('The portfolio %s does not exist. Cannot update it.' % (name,), 'error')
-                return render_template('pages/portfolio_form.html', uid=uid, markets=MARKETS, selected_market=new_market, uids=current_app.uids, selected_uids=new_shared_uids)
+                return render_template('portfolio/pages/form.html', uid=uid, selected_market=new_market, uids=current_app.uids, selected_uids=new_shared_uids)
 
         else: #create
             pf = Portfolio(new_name, new_market, uid)
@@ -40,35 +46,109 @@ def save(name):
             current_app.portfolio_manager.add(pf)
     # todo save portfolios
     flash('Saved portfolio %s' % (new_name, ))
-    return redirect(url_for(portfolios_bp.name + '.view', name=new_name))
+    return redirect(url_for(portfolio_bp.name + '.view', name=new_name, uid=uid))
             
     
-@portfolios_bp.route('/update/<name>')
+@portfolio_bp.route('/update/<name>')
 @login_required
 def update(name):    
     uid=current_user.get_id()
     pf = current_app.portfolio_manager.get(uid, name)
     if pf:
-        return render_template('pages/portfolio_form.html', 
-                           uid=uid, 
-                           markets=MARKETS, selected_market=pf.market, 
+        return render_template('portfolio/pages/form.html', 
+                           uid=uid,  selected_market=pf.market, 
                            uids=current_app.uids, selected_uids=pf.users)
     else:
         flash('Cannot modify the portfolio %s, the owner is %s. You can only modify your own portfolios.' % (name, uid), 'error')
         return redirect(url_for('index'))
     
     
-@portfolios_bp.route('/create')
+@portfolio_bp.route('/create')
 @login_required
 def create():
-    return render_template('pages/portfolio_form.html', uid=current_user.get_id(), markets=MARKETS, uids=current_app.uids)
+    return render_template('portfolio/pages/form.html', uid=current_user.get_id(), uids=current_app.uids)
 
-@portfolios_bp.route('/view/<name>')
+@portfolio_bp.route('/view/<name>/<uid>')
 @login_required
-def view(name):
+def view(name, uid=None):
+    if not uid:
+        uid=current_user.get_id()
+    pf = current_app.portfolio_manager.get(uid, name)
+    if pf:
+        return render_template('portfolio/pages/view.html', portfolio=pf, uid=current_user.get_id(), name=name)
+    else:
+        flash('Cannot get the portfolio of "%s" named "%s"' % (uid, name))
+        return redirect(url_for('index'))
+
+
+@portfolio_bp.route('/select/filter/<name>', methods=['POST'])
+@login_required
+def select_filter(name):
+    filter_type = request.form['filter_type']
+    if filter_type:
+        filter = Filter.factory(filter_type)
+        if filter:
+            logging.debug("filter -> '%s' fields %u" % (filter.id, len(filter.fields)))
+            return render_template('portfolio/pages/add_filter.html', fields=filter.fields.values() ,filter_type=filter_type, p_name=name, uid=current_user.get_id(), name=name)
+        else:
+            flash('Cannot generate a filter of type ' + filter_type, 'error')
+    else:
+        flash('Filter type was not selected', 'error')
+    return redirect(url_for(portfolio_bp.name + '.view', name=name))
+
+@portfolio_bp.route('/<name>/add/filter/<filter_type>', methods=['POST'])
+@login_required
+def add_filter(name, filter_type):
+    if filter_type:
+        filter = Filter.factory(filter_type)
+        if filter:
+            try:
+                for field in filter.fields.values():
+                    field.value = request.form[field.name]
+                
+                uid=current_user.get_id()
+                pf = current_app.portfolio_manager.get(uid, name)
+                if pf:
+                    pf.add_filter(filter)
+                    save_portfolio_manager()
+                else:
+                    flash('Cannot get the portfolio %s for user %s'% (name, uid))
+            except BaseException as e:
+                logging.exception(e)
+                flash('Cannot create the filter because: %s' % (e,), 'error')
+        else:
+            flash('Cannot generate a filter of type "' + filter_type + '"', 'error')
+    else:
+        flash('Filter type was not selected', 'error')
+    return redirect(url_for(portfolio_bp.name + '.view', name=name))
+
+@portfolio_bp.route('/<name>/del/filter/<filter_id>', methods=['GET'])
+@login_required
+def del_filter(name, filter_id):
     uid=current_user.get_id()
     pf = current_app.portfolio_manager.get(uid, name)
-    return render_template('pages/view_portfolio.html', portfolio=pf, uid=uid, name=name)
+    if pf:
+        try:
+            pf.del_filter(filter_id)
+            save_portfolio_manager()
+            flash('Deleted filter "%s" from portfolio "%s" of user "%s"' % (filter_id, name, uid))
+        except KeyError as e:
+            flash('Error deleting filter "%s" from portfolio "%s" of user "%s"'%(filter_id, name, uid), 'error')
+    else:
+        flash('Portfolio %s of user %s, not found'%(filter_id, name, uid), 'error')
+
+    return redirect(url_for(portfolio_bp.name + '.view', name=name))
+
+@portfolio_bp.route('/delete/<name>', methods=['GET'])
+@login_required
+def delete(name):
+    uid=current_user.get_id()
+    if current_app.portfolio_manager.delete(uid, name):
+        flash('Deleted portfolio "%s" of user "%s"' % (name, uid))
+        save_portfolio_manager()
+    else:
+        flash('Cannnot delete portfolio "%s" of user "%s"' % (name, uid), 'error')
+    return redirect(url_for('index'))
 
 
-    
+        

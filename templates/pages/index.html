@@ -6,13 +6,13 @@
 		<section id="own portfolios">
 			<h1>Portfolios propios</h1>
 			{% with portfolios=own_pfs %}
-				{% include 'list_portfolios.html' %}
+				{% include 'portfolio/list.html' %}
 			{% endwith %}
 		</section>
 		<section id="shared portfolios">
 			<h1>Portfolios que han compartido contigo</h1>
 			{% with portfolios=shared_pfs %}
-				{% include 'list_portfolios.html' %}
+				{% include 'portfolio/list.html' %}
 			{% endwith %}
 		</section>
 	{% else %}
