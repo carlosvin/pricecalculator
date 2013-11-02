@@ -151,5 +151,16 @@ def delete(name):
         flash('Cannnot delete portfolio "%s" of user "%s"' % (name, uid), Alerts.ERROR)
     return redirect(url_for('index'))
 
+@portfolio.route('/list/own', methods=['GET'])
+@login_required
+def list_own():
+    uid = current_user.get_id()
+    pfs=current_app.portfolio_manager.get_own(uid).values()
+    return render_template("portfolio/pages/list_own.html", uid=uid, portfolios=pfs)        
 
-        
+@portfolio.route('/list/shared', methods=['GET'])
+@login_required
+def list_shared():
+    uid = current_user.get_id()
+    pfs=current_app.portfolio_manager.get_shared(uid).values()
+    return render_template("portfolio/pages/list_shared.html", uid=uid, portfolios=pfs)        

@@ -54,6 +54,8 @@ class ViewCfg:
 
 MENU_PORTFOLIO = (
          ViewCfg('Create', 'portfolio.create'),
+         ViewCfg('Propios', 'portfolio.list_own'),
+         ViewCfg('Compartidos', 'portfolio.list_shared'),
         )
 
 class Application:
