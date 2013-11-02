@@ -1,2 +1,2 @@
-web: gunicorn online-calculator:app
+web: gunicorn app:app
 

@@ -24,7 +24,9 @@
 	    	</div>
 			<div class="navbar-collapse collapse">
 			{% include 'navbar.html' %}
-			{% include 'login.html' %}
+			{% block loginnav %}
+				{% include 'login.html' %}
+			{% endblock %}
 	        </div>
     	</div>
     </div>
