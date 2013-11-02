@@ -1,20 +1,28 @@
 
-<form action="{{ url_for('portfolio.save') }}" method="post">
-	<input type="text" name="name" placeholder="Nombre del portfolio" required>
-	<label for="shared_with">Mercado</label>
-	<select id="market" name="market" contextmenu="Selecciona un tipo de mercado">
-		{% for m in config.MARKETS %}
-   		<option>{{ m.name }}</option>
-   		{% endfor %}
-	</select>
-	<label for="shared_with">Compartir con</label>
-	<select id="shared_with" name="shared_with" multiple>
-		{% for u in uids %}
-			{% if u != uid %}
-   				<option>{{ u }}</option>
-   			{% endif %}
-   		{% endfor %}
-	</select>
-	
-	<input type="submit">
+<form role="form" action="{{ url_for('portfolio.save') }}" method="post">
+	<div class="form-group">
+		<label>Nombre del portfolio</label>
+		<input type="text" name="name" class="form-control" placeholder="Nombre" required>
+	</div>
+	<div class="form-group">
+		<label for="shared_with">Mercado</label>
+		<select id="market" name="market" class="form-control" contextmenu="Selecciona un tipo de mercado">
+			{% for m in config.MARKETS %}
+	   		<option>{{ m.name }}</option>
+	   		{% endfor %}
+		</select>
+	</div>
+	<div class="form-group">
+		<label for="shared_with">Compartir con</label>
+		<select id="shared_with" class="form-control" name="shared_with" multiple>
+			{% for u in uids %}
+				{% if u != uid %}
+	   				<option>{{ u }}</option>
+	   			{% endif %}
+	   		{% endfor %}
+		</select>
+		<p class="help-block">Selecciona los usuarios que pueden ver este portfolio</p>
+
+	</div>
+	<input type="submit" class="btn btn-default">
 </form>

@@ -1,8 +1,12 @@
-<form action="{{ url_for('portfolio.select_filter',name=p_name) }}" method="post">
-	<select name="filter_type">
-		{% for filter_type in config.FILTERS %}
-		<option>{{ filter_type }}</option>
-		{% endfor %}
-	</select>
-	<input type="submit" value="Siguiente">
+<form role="form" action="{{ url_for('portfolio.select_filter',name=p_name) }}" method="post">
+	<div class="form-group">
+		<label for="filter_type">Tipo de filtro</label>
+		<select class="form-control" name="filter_type">
+			{% for filter_type in config.FILTERS %}
+			<option>{{ filter_type }}</option>
+			{% endfor %}
+		</select>
+		<p class="help-block">Selecciona el tipo de filtro que quieres añadir</p>
+	</div>	
+	<input type="submit" value="Siguiente" class="btn btn-default">
 </form>
