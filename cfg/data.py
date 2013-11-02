@@ -42,5 +42,15 @@ class Alerts:
     WARN = 'warning'
     ERROR = 'danger'
 
+class ViewCfg:
+    def __init__(self, name, endpoint):
+        self.name = name
+        self.endpoint = endpoint
+
 class Application:
     APP_NAME = "Tuntun"
+
+    VIEWS_MENU = (
+         ViewCfg('Calculator', 'calculator.calculate'),
+
+        )
