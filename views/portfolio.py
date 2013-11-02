@@ -14,7 +14,7 @@ from werkzeug.utils import redirect
 from domain.filters import Filter
 from cfg.data import Alerts
 
-portfolio_bp = Blueprint('portfolio', __name__, template_folder='templates/')
+portfolio = Blueprint('portfolio', __name__, template_folder='templates/')
 
 def save_portfolio_manager():
     if current_app.save_portfolio_manager():
@@ -22,8 +22,8 @@ def save_portfolio_manager():
     else:
         flash('Saving portfolio manager: Error', Alerts.ERROR)
 
-@portfolio_bp.route('/save', defaults={'name': None}, methods=['POST'])
-@portfolio_bp.route('/save/<name>', methods=['POST','GET'])
+@portfolio.route('/save', defaults={'name': None}, methods=['POST'])
+@portfolio.route('/save/<name>', methods=['POST','GET'])
 @login_required
 def save(name):
     uid=current_user.get_id()
@@ -47,10 +47,10 @@ def save(name):
             current_app.portfolio_manager.add(pf)
     # todo save portfolios
     flash('Saved portfolio %s' % (new_name, ), Alerts.SUCCESS)
-    return redirect(url_for(portfolio_bp.name + '.view', name=new_name, uid=uid))
+    return redirect(url_for(portfolio.name + '.view', name=new_name, uid=uid))
             
     
-@portfolio_bp.route('/update/<name>')
+@portfolio.route('/update/<name>')
 @login_required
 def update(name):    
     uid=current_user.get_id()
@@ -64,12 +64,12 @@ def update(name):
         return redirect(url_for('index'))
     
     
-@portfolio_bp.route('/create')
+@portfolio.route('/create')
 @login_required
 def create():
     return render_template('portfolio/pages/form.html', uid=current_user.get_id(), uids=current_app.uids)
 
-@portfolio_bp.route('/view/<name>/<uid>')
+@portfolio.route('/view/<name>/<uid>')
 @login_required
 def view(name, uid=None):
     if not uid:
@@ -82,7 +82,7 @@ def view(name, uid=None):
         return redirect(url_for('index'))
 
 
-@portfolio_bp.route('/select/filter/<name>', methods=['POST'])
+@portfolio.route('/select/filter/<name>', methods=['POST'])
 @login_required
 def select_filter(name):
     filter_type = request.form['filter_type']
@@ -95,9 +95,9 @@ def select_filter(name):
             flash('Cannot generate a filter of type ' + filter_type, Alerts.ERROR)
     else:
         flash('Filter type was not selected', Alerts.ERROR)
-    return redirect(url_for(portfolio_bp.name + '.view', name=name, uid=current_user.get_id()))
+    return redirect(url_for(portfolio.name + '.view', name=name, uid=current_user.get_id()))
 
-@portfolio_bp.route('/<name>/add/filter/<filter_type>', methods=['POST'])
+@portfolio.route('/<name>/add/filter/<filter_type>', methods=['POST'])
 @login_required
 def add_filter(name, filter_type):
     uid=current_user.get_id()
@@ -121,9 +121,9 @@ def add_filter(name, filter_type):
             flash('Cannot generate a filter of type "' + filter_type + '"', Alerts.ERROR)
     else:
         flash('Filter type was not selected', Alerts.ERROR)
-    return redirect(url_for(portfolio_bp.name + '.view', name=name, uid=uid))
+    return redirect(url_for(portfolio.name + '.view', name=name, uid=uid))
 
-@portfolio_bp.route('/<name>/del/filter/<filter_id>', methods=['GET'])
+@portfolio.route('/<name>/del/filter/<filter_id>', methods=['GET'])
 @login_required
 def del_filter(name, filter_id):
     uid=current_user.get_id()
@@ -138,9 +138,9 @@ def del_filter(name, filter_id):
     else:
         flash('Portfolio %s of user %s, not found'%(filter_id, name, uid), Alerts.ERROR)
 
-    return redirect(url_for(portfolio_bp.name + '.view', name=name, uid=uid))
+    return redirect(url_for(portfolio.name + '.view', name=name, uid=uid))
 
-@portfolio_bp.route('/delete/<name>', methods=['GET'])
+@portfolio.route('/delete/<name>', methods=['GET'])
 @login_required
 def delete(name):
     uid=current_user.get_id()

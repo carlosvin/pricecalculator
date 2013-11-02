@@ -43,14 +43,24 @@ class Alerts:
     ERROR = 'danger'
 
 class ViewCfg:
-    def __init__(self, name, endpoint):
+    def __init__(self, name, endpoint, childs=()):
         self.name = name
         self.endpoint = endpoint
+        self.childs = childs
+
+    @property
+    def has_childs(self):
+        return len(self.childs) > 0
+
+MENU_PORTFOLIO = (
+         ViewCfg('Create', 'portfolio.create'),
+        )
 
 class Application:
     APP_NAME = "Tuntun"
 
     VIEWS_MENU = (
          ViewCfg('Calculator', 'calculator.calculate'),
+         ViewCfg('Portfolio', None, MENU_PORTFOLIO),
 
         )

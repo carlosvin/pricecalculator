@@ -13,7 +13,7 @@ from urllib2 import URLError
 import logging
 from cfg import Log, Paths, Extensions
 from cfg.data import Secrets, SchedCfg, Enums, Alerts, Application
-from views.portfolio import portfolio_bp
+from views.portfolio import portfolio
 from views.calculator import calculator
 
 class App(Flask):
@@ -99,7 +99,7 @@ class App(Flask):
             return False
                 
 app = App()
-app.register_blueprint(portfolio_bp)
+app.register_blueprint(portfolio)
 app.register_blueprint(calculator, url_prefix='/calculator')
 
 
