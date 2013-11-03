@@ -86,7 +86,7 @@ class StockParser (HTMLParser, object):
         
     def _clean_nones(self):
         for s in self.stocks:
-            if s.is_invalid():
+            if s.is_invalid:
                 self.stocks.remove(s)
 
            

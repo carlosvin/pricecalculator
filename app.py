@@ -54,11 +54,11 @@ class App(Flask):
             self._stocks_updater.update()
         except URLError:
             logging.error('Cannot get URL: ' + self._stocks_updater.url)
-        
-    def _get_stocks(self):
+    
+    @property
+    def stocks(self):
         return self._stocks_updater.stocks
-    stocks=property(_get_stocks)
-
+    
     @staticmethod
     def is_installed():
         return os.path.exists(Paths.DATA_DIR) 

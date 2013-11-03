@@ -76,11 +76,20 @@ def view(name, uid=None):
         uid=current_user.get_id()
     pf = current_app.portfolio_manager.get(uid, name)
     if pf:
-        return render_template('portfolio/pages/view.html', portfolio=pf, uid=current_user.get_id(), name=name)
+        return render_template('portfolio/pages/view.html', portfolio=pf, uid=current_user.get_id(), name=name, stocks=get_filtered_stocks(pf.filters.values()))
     else:
         flash('Cannot get the portfolio of "%s" named "%s"' % (uid, name),Alerts.ERROR)
         return redirect(url_for('index'))
 
+def get_filtered_stocks(filters):
+    stocks = []
+    for s in current_app.stocks:
+        add_stock = True
+        for f in filters:
+            add_stock = add_stock and f.filter(s.price)
+        if add_stock:
+            stocks.append(s)
+    return stocks
 
 @portfolio.route('/select/filter/<name>', methods=['POST'])
 @login_required

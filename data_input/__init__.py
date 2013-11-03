@@ -31,13 +31,13 @@ class StocksInfoUpdater(object):
         self.parser.feed(dataread)
         return self.parser.stocks
     
-    def _get_stocks(self):
+    @property
+    def stocks(self):
         return self.parser.stocks
-    stocks = property(_get_stocks)
     
-    def _get_url(self):
+    @property
+    def url(self):
         return self.downloader.url
-    url = property(_get_url)
     
 
 

@@ -77,7 +77,7 @@ class FilterLessThan(FilterXThan):
 	NAME = 'Menor que'
 	
 	def filter(self, v):
-		return self.value < float(v)
+		return self.value > float(v)
 	
 	@classmethod
 	def get_name(self):
@@ -87,7 +87,7 @@ class FilterMoreThan(FilterXThan):
 	NAME = 'Mayor que'
 
 	def filter(self, v):
-		return self.value > float(v)
+		return self.value < float(v)
 	
 	@classmethod
 	def get_name(self):
