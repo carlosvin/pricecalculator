@@ -1,5 +1,15 @@
 {% extends 'layout.html' %}
-
+{% block titlebody %}
+	<a href="{{ url_for('portfolio.view', name=portfolio.name, uid=portfolio.owner) }}">{{ portfolio.name }}</a>
+{% endblock %}
+{% block titlebodyextra %}
+	<small> ({{ portfolio.market }})</small>
+{% endblock %}
+{% if portfolio.owner==uid %}
+	{% block titlebodyactions %}
+		<a href="{{ url_for('portfolio.update',name=portfolio.name) }}" class="btn btn-primary btn-sm">Editar</a>
+	{% endblock %}
+{% endif %}
 {% block body %}
 	{% include 'portfolio/view.html' %}
 {% endblock %}

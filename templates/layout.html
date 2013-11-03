@@ -30,8 +30,13 @@
 	        </div>
     	</div>
     </div>
-    <div class="container">    
-	    <h1>{% block titlebody %}{% endblock %}</h1>
+    <div class="container">
+    	{% block pageheader %}
+	    	<header class="page-header row">
+	    		<h1 class="col-xs-12 col-md-8">{%block titlebody %}{% endblock %}<small>{%block titlebodyextra %}{% endblock %}</small></h1>
+	    		<p class="col-xs-6 col-md-4 text-right">{% block titlebodyactions %}{% endblock %}</p>
+	    	</header>
+    	{% endblock %}
 	    <div class="container">
 		    {% block body %}{% endblock %}
 	    </div>

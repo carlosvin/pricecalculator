@@ -1,5 +1,21 @@
 {% extends 'layout.html' %}
 
+{% block title %}
+	{% if portfolio %}
+		Modificar {{ portfolio.name }}
+	{% else %}
+		Crear un nuevo portfolio
+	{% endif %}
+{% endblock %}
+
+{% block titlebody %}
+	{% if portfolio %}
+		Modificar {{ portfolio.name }}
+	{% else %}
+		Crear un nuevo portfolio
+	{% endif %}
+{% endblock %}
+
 {% block body %}
 	{% include 'portfolio/form.html' %}
 {% endblock %}

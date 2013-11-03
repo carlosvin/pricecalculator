@@ -17,9 +17,9 @@ class Field(object):
 		
 	def __repr__(self):
 		if self.value:
-			return u"%s:%s=%s" % (self.name, self.type, self.value)
+			return u"%s:%s" % (self.name, self.value)
 		else:
-			return u"%s:%s=%s" % (self.name, self.type, "None")
+			return u"%s:%s" % (self.name, "None")
 	
 	@property
 	def value(self):
@@ -50,7 +50,7 @@ class Filter(object):
 	
 	@property
 	def id(self):
-		return self.get_name() + str(self.fields.values())
+		return self.get_name() + ' ' + str(self.fields.values())
 	
 	@staticmethod
 	def factory(filter_type):
