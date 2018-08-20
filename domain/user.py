@@ -14,7 +14,7 @@ class User(UserMixin):
         return self._password == pw
     
     def get_id(self):
-        return unicode(self._email)
+        return self._email
     
     #TODO improve this method
     @staticmethod

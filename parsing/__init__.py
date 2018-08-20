@@ -1,4 +1,4 @@
-from HTMLParser import HTMLParser, HTMLParseError
+from html.parser import HTMLParser
 import logging
 import copy
 from domain import Stock
@@ -12,6 +12,7 @@ def get_attr(name, attrs):
 class StockParser (HTMLParser, object):
     
     def __init__(self):
+        super().__init__()
         self.reset()
         self.stocks = []
         self._s_tmp = None
@@ -25,10 +26,7 @@ class StockParser (HTMLParser, object):
 
     def feed(self, data):
         self.cleanup()
-        try:
-            super(StockParser, self).feed(data)
-        except HTMLParseError as e:
-            logging.warn(e)
+        super(StockParser, self).feed(data.decode())
 
     def handle_starttag(self, tag, attrs):
         if tag == 'table':
@@ -88,6 +86,3 @@ class StockParser (HTMLParser, object):
         for s in self.stocks:
             if s.is_invalid:
                 self.stocks.remove(s)
-
-           
-                

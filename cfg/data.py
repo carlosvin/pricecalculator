@@ -15,11 +15,6 @@ class FileNames:
     USERS = 'users.saved'
     LOG_FILE_NAME = 'output.log'
     
-class SchedCfg:
-    DAYS='0-4'
-    HOURS='8-17'
-    MINUTES='0,15,30,45'
-    
 # --------------- Secrets:
 class Secrets:
     KEY = 'fjsDFDeseJIKL675yu67321f--lfgLd'

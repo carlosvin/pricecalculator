@@ -1,18 +1,18 @@
 import os
 from data_input import StocksInfoUpdater
 from flask import Flask, render_template, request
-from apscheduler.scheduler import Scheduler        
+import sched, time
 import pickle
+from urllib.error import URLError
 from domain.portfolio import PortfolioManager
 from flask_login import LoginManager, login_user, logout_user,login_required,\
     current_user
 from domain.user import UserManager
 from flask.helpers import flash, url_for
 from werkzeug.utils import redirect
-from urllib2 import URLError
 import logging
 from cfg import Log, Paths, Extensions
-from cfg.data import Secrets, SchedCfg, Enums, Alerts, Application
+from cfg.data import Secrets, Enums, Alerts, Application
 from views.portfolio import portfolio
 from views.calculator import calculator
 
@@ -41,16 +41,13 @@ class App(Flask):
         
         
         # TODO when we have more markets, then we'll create and stocks upater by market
-        self.sched = Scheduler()
+        self.sched = sched.scheduler(time.time, time.sleep)
         self._stocks_updater = StocksInfoUpdater(Enums.MARKETS[0].url)
         self.update_remote()
-        
-    def run(self):
-        self.sched.start()
-        super(App, self).run(debug = Log.MODE)
     
     def update_remote(self):
         try:
+            self.sched.enter(3600, 1, self.update_remote)
             self._stocks_updater.update()
         except URLError:
             logging.error('Cannot get URL: ' + self._stocks_updater.url)
@@ -149,7 +146,7 @@ def list_our_stocks():
     for files in os.listdir(Paths.DATA_DIR):
         if files.endswith(Extensions.DATA):
             stocks_files.append(files)
-    return unicode(stocks_files)
+    return str(stocks_files, 'utf-8')
 
 @app.route('/prices')
 def list_prices():
@@ -161,10 +158,6 @@ def index():
     return render_template("pages/index.html", 
                            uid=uid, 
                            own_pfs=app.portfolio_manager.get_own(uid).values(), shared_pfs=app.portfolio_manager.get_shared(uid).values())
-
-@app.sched.cron_schedule(minute=SchedCfg.MINUTES, day_of_week=SchedCfg.DAYS, hour=SchedCfg.HOURS)
-def update_remote_data():
-    app.update_remote()
 
 if __name__ == '__main__':
     app.run()

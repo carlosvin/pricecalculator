@@ -12,13 +12,10 @@ class Stock(object):
     
     @name.setter
     def name(self, name):
-        self._name = unicode(name, errors='ignore')
+        self._name = str(name, 'utf-8', errors='ignore')
     
     def __str__(self):
-        return self.__unicode__()
-
-    def __unicode__(self):
-        if self.name <> None:
+        if self.name is not None:
             return u"%s.\t%f" % (self.id, self.price)
         else:
             return "None"

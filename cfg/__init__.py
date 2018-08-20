@@ -15,4 +15,3 @@ class Log:
     LEVEL = logging.DEBUG
     MODE = (LEVEL == logging.DEBUG)
 
-

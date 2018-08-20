@@ -65,9 +65,6 @@ class InputData(object):
     def __str__(self):
         return str(self.sell_price_0_profit)
 
-    def __unicode__(self):
-        return str(self)
-
 if __name__ == "__main__":
     input_values = InputData()
     input_values.input_money = input("Dinero que vamos a invertir: ")

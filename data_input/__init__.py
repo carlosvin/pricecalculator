@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-import urllib2
+from urllib.request import Request, urlopen
 import logging
 import parsing
 
@@ -12,10 +12,10 @@ class Downloader(object):
         self.url = url
         
     def read(self):
-        request = urllib2.Request( self.url )
+        request = Request( self.url )
         request.add_header('Accept-encoding', 'text/html')
-        response = urllib2.urlopen(request)
-        charset = response.headers.getparam('charset')
+        response = urlopen(request)
+        charset = response.headers.get('charset')
         data = response.read()
         logging.debug('Read %u bytes from %s (%s)' % (len(data), self.url, charset))
         return data
