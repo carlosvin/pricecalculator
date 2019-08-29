@@ -13,5 +13,5 @@ pytz==2018.5
 req==1.0.0
 six==1.11.0
 tzlocal==1.5.1
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 wrapt==1.10.11
